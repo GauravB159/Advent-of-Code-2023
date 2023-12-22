@@ -14,22 +14,23 @@ def get_points(limit, text, start):
         for j, col in enumerate(row):
             grid[(i, j)] = col
     visited = {}
-    def traverse(point, level, limit):
+    queue = [(start, 0)]
+    while(len(queue)):
+        point, level = queue.pop(0)
         if level > limit:
-            return
+            continue
         if not grid.get(point, 0):
-            return
-        if point in visited and visited[point] <= level:
-            return
+            continue
+        if point in visited:
+            continue
         if grid[point] == '#':
-            return
+            continue
         visited[point] = level
-        traverse((point[0] + 1, point[1]), level + 1, limit)
-        traverse((point[0] - 1, point[1]), level + 1, limit)
-        traverse((point[0], point[1] + 1), level + 1, limit)
-        traverse((point[0], point[1] - 1), level + 1, limit)
+        queue.append(((point[0] + 1, point[1]), level + 1))
+        queue.append(((point[0] - 1, point[1]), level + 1))
+        queue.append(((point[0], point[1] + 1), level + 1))
+        queue.append(((point[0], point[1] - 1), level + 1))
 
-    traverse(start, 0, limit)
     return len([k for k in visited if visited[k] % 2 == limit % 2])
 
 
@@ -55,7 +56,7 @@ def get_obstacle_pixel_count(text):
     return odd_count, even_count
 
 extend_factor = 11
-steps = 65 + 131 * 3
-extra = 2
 
-print(plot_with_extended_graph(extend_factor, steps))
+for i in range(5):
+    steps = 65 + 131 * i
+    print(plot_with_extended_graph(extend_factor, steps))
